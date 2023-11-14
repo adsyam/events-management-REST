@@ -19,18 +19,18 @@ class EventController extends Controller
      */
     public function index()
     {
+        // Load relationships and retrieve a query for events
         $query = $this->loadRelationships(Event::query());
 
+        // Return a collection of EventResource objects for the paginated events
         return EventResource::collection(
             $query->latest()->paginate()
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        // Create a new event with validated request data
         $event = Event::create([
             ...$request->validate([
                 'name' => 'required|string|max:255',
@@ -41,22 +41,19 @@ class EventController extends Controller
             'user_id' => 1
         ]);
 
+        // Return a new EventResource object for the created event
         return new EventResource($this->loadRelationships($event));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Event $event)
     {
+        // Return an EventResource object for the specified event
         return new EventResource($this->loadRelationships($event));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Event $event)
     {
+        // Update the event with validated request data
         $event->update(
             $request->validate([
                 'name' => 'sometimes|string|max:255',
@@ -66,16 +63,16 @@ class EventController extends Controller
             ])
         );
 
+        // Return an EventResource object for the updated event
         return new EventResource($this->loadRelationships($event));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Event $event)
     {
+        // Delete the specified event
         $event->delete();
 
+        // Return a response with status code 204
         return response(status: 204);
     }
 }
